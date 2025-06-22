@@ -1,6 +1,6 @@
 # 🚀 AeroSwarm - Parallel Drone Swarm Simulator
 
-![CI](https://github.com/YOUR_USERNAME/AeroSwarm/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/javahedi/AeroSwarm/actions/workflows/ci.yml/badge.svg)
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
