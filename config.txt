@@ -1,0 +1,4 @@
+# Simulation parameters
+width = 30
+height = 50
+numberDrones = 4

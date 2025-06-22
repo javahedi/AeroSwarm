@@ -17,4 +17,4 @@ struct SimulationControl {
 };
 
 
-void run_drone_simulation();
+void run_drone_simulation(size_t width, size_t height, size_t num_drones);

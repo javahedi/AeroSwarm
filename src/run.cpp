@@ -13,10 +13,9 @@
 namespace fs = std::filesystem;
 
 
-void run_drone_simulation() {
+void run_drone_simulation(size_t width, size_t height, size_t num_drones) {
     //std::cout << "Creating terrain...\n";  // DEBUG
-    const int width = 30;
-    const int height = 50;
+   
     Terrain terrain(width, height);
 
 
@@ -25,7 +24,7 @@ void run_drone_simulation() {
     std::random_device rd;
     std::mt19937 gen(rd());
     
-    const size_t num_drones = 4;
+    
     std::vector<Drone> drones;
     for (size_t i = 0; i < num_drones; ++i) {
         Position pos;

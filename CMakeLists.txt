@@ -35,3 +35,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     target_compile_options(SwarmSimulator PRIVATE -Wall -Wextra -Wpedantic -g)
 endif()
+
+# Add this after your executable target
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.txt
+    ${CMAKE_CURRENT_BINARY_DIR}/config.txt
+    COPYONLY
+)
