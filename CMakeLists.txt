@@ -60,7 +60,22 @@ option(BUILD_TESTS "Build tests" ON)
 
 if(BUILD_TESTS)
     enable_testing()
-    find_package(Catch2 REQUIRED)
+
+    # Try to find system Catch2 first
+    find_package(Catch2 QUIET)
+
+    if(NOT Catch2_FOUND)
+        message(STATUS "Catch2 not found, downloading with FetchContent...")
+        include(FetchContent)
+        FetchContent_Declare(
+            Catch2
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+            GIT_TAG v3.5.2
+        )
+        FetchContent_MakeAvailable(Catch2)
+    else()
+        message(STATUS "Using system-installed Catch2")
+    endif()
 
     add_executable(tests tests/test_drone.cpp)
     target_link_libraries(tests PRIVATE SwarmCore Catch2::Catch2WithMain)
