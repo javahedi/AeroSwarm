@@ -1,6 +1,6 @@
 # 🚀 AeroSwarm - Parallel Drone Swarm Simulator
 
-![Demo GIF](frames/drone_sim.gif)  <!-- Your generated GIF here -->
+![Demo GIF](docs/drone_sim.gif)  <!-- Your generated GIF here -->
 
 > **Note**: If the GIF doesn't animate on GitHub, refresh the page or view it [directly](docs/simulation.gif).
 
