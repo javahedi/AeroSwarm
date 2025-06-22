@@ -70,6 +70,37 @@ Iteration: 92
 🎯 Drone #0 found the target at (20,2)
 ```
 
+
+## 🚀 **Future Roadmap & Call for Collaborators**  
+**Let’s make this swarm smarter together!**  
+
+### 🔮 **Planned Upgrades**  
+| Area           | Cool Ideas                                                                 |
+|----------------|---------------------------------------------------------------------------|
+| **AI**         | Add ML-based path prediction (CNN/LSTM)                                   |
+| **Physics**    | Real drone dynamics (acceleration, battery drain)                         |
+| **Visuals**    | 3D WebGL visualization (via Three.js)                                    |
+| **Game Mode**  | Competing swarms with resource collection                                |
+| **Benchmarks** | Compare algorithms (A* vs RRT vs Swarm)                                  |
+
+### 🤝 **Join the Fun!**  
+We welcome:  
+```diff
++ C++ enthusiasts  + Python wrappers   + ML engineers  
++ ROS integrators  + UI designers      + Algorithm nerds
+```
+
+**How to contribute:**  
+1. Fork → Hack → PR  
+2. Claim an issue from our [Good First Issues](link-to-issues)  
+3. Chat with us on [Discord](invite-link)  
+
+
 ## 📜 License
 
 MIT License - Free for research and commercial use.
+
+
+
+
+
