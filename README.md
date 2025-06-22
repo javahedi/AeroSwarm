@@ -25,9 +25,10 @@ make
 
 ## 📊 Example Output
 ```
-Iteration 142: Drone [3] reached (12,24)
-Iteration 143: Drone [1] pathfinding...
-Target found in 144 steps!
+Iteration: 90
+Iteration: 91
+Iteration: 92
+🎯 Drone #0 found the target at (20,2)
 ```
 
 ## 📜 License
