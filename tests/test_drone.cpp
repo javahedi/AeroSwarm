@@ -44,3 +44,5 @@ TEST_CASE("Drone Movement", "[drone][movement]") {
         REQUIRE(terrain.grid[new_pos.x][new_pos.y] == Cell::Drone);
     }
 }
+
+// use command  " ctest" or "./bin/tests"
