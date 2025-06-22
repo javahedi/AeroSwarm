@@ -3,7 +3,8 @@
 #include <limits>
 #include <stdexcept>
 
-Drone::Drone(const Position& pos, Terrain& t) : position(pos), terrain(t), target_found(false) {
+Drone::Drone(int id, const Position& pos, Terrain& t) 
+    : position(pos), terrain(t), target_found(false), id_(id) {
     visit_count[pos] = 1;
     visited_positions.insert(pos);
     terrain.place_drone(position);
@@ -136,4 +137,8 @@ bool Drone::has_reached_target() const {
 
 bool Drone::save_terrain_to_file(const std::string& filename) const {
     return terrain.save_to_file(filename);
+}
+
+int Drone::get_id() const {
+    return id_;
 }

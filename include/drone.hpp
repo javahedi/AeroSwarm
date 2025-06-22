@@ -25,7 +25,7 @@ public:
     /// @brief Constructor to initialize the drone with a position and terrain reference.
     /// @param pos Initial position of the drone.
     /// @param t Reference to the terrain the drone is navigating.
-    Drone(const Position& pos, Terrain& t);
+    Drone(int id, const Position& pos, Terrain& t);
 
     /// @brief Move the drone to a new position.
     /// @details Updates the drone's position, increments visit count, and marks the new position
@@ -72,4 +72,8 @@ public:
     /// @param filename Name of the file to save to.
     /// @return True if saved successfully, false otherwise.
     bool save_terrain_to_file(const std::string& filename) const;
+
+    int get_id() const;
+private:
+    int id_;  // Unique identifier for the drone
 };

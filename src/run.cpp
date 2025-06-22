@@ -48,7 +48,7 @@ void run_drone_simulation() {
         You have an existing object	                  |      push_back
         You want to construct the object in place	  |      emplace_back
         */
-        drones.emplace_back(pos, terrain); 
+        drones.emplace_back(i, pos, terrain); 
         //std::cout << "Drone " << i << " placed at (" << pos.x << "," << pos.y << ")\n";  // DEBUG
 
 
@@ -60,16 +60,18 @@ void run_drone_simulation() {
     int iterations = 0;
     std::ostringstream oss;
 
-
+  
 
     std::cout << "Starting simulation loop...\n"; 
-    // loop over all drones
-    bool target_found = false;  
-    while (!target_found) {
+    // loop over all drones 
+    // Create an instance of SimulationControl
+    SimulationControl simControl;
+    while (!simControl.target_found) {
         for (auto& drone : drones) {
 
             if (drone.has_reached_target()) {
-                target_found = true;
+                simControl.target_found = true;
+                simControl.winning_drone_id = drone.get_id(); // Set the winning drone ID
                 break;
             }
 
@@ -83,6 +85,7 @@ void run_drone_simulation() {
                 drone.save_terrain_to_file(oss.str());
 
                 std::cout << "Iteration: " << iterations << std::endl;
+                
                 if (iterations > 1000) {
                     std::cout << "Drone has been running for too long, exiting simulation." << std::endl;
                     break;
@@ -91,12 +94,15 @@ void run_drone_simulation() {
                     std::cerr << "Error: " << e.what() << std::endl;
                     break;
                 }
-            // Check if the drone has reached the target
-            if (drone.has_reached_target()) {
-                std::cout << " 💥 💥 Drone has reached the target! 💥 💥 " << std::endl;
-                break;
             }
-        }
+
+            // Check if the drone has reached the target  
+            if (simControl.winning_drone_id >= 0) {
+                std::cout << "🎯 Drone #" << simControl.winning_drone_id
+                        << " found the target at ("
+                        << terrain.target.x << "," << terrain.target.y << ")\n";
+            }
+
     }
 }
 
