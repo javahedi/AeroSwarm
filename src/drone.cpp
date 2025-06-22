@@ -13,14 +13,25 @@ Drone::Drone(int id, const Position& pos, Terrain& t)
 
 
 void Drone::move_to(const Position& new_pos) {
-    if (terrain.is_valid_position(new_pos)) {
-        terrain.clear_drone_position(position); // Clear previous drone position
-        position = new_pos;
-        terrain.place_drone(position);          // Place drone at new position
-        visit_count[new_pos]++;
-        visited_positions.insert(new_pos);
+    if (!terrain.is_valid_position(new_pos)) {
+        throw std::runtime_error("Invalid move position");
+    }
 
-        if (new_pos == terrain.target) { target_found = true; }
+    // Clear old position
+    terrain.clear_drone_position(position);
+    
+    // Update position
+    position = new_pos;
+    
+    // Mark new position
+    terrain.place_drone(position);
+
+    // Update visit tracking
+    visit_count[new_pos]++;
+    visited_positions.insert(new_pos);
+
+    if (new_pos == terrain.target) {
+        target_found = true;
     }
 }
 

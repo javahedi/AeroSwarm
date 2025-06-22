@@ -38,4 +38,6 @@ public:
     void clear_drone_position(const Position& pos);
     void debug_invalid_position(const Position& pos, const std::string& message) const;
     bool save_to_file(const std::string& filename) const;
+
+    Cell get_cell(int x, int y) const; 
 };

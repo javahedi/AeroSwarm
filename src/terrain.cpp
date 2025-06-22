@@ -139,3 +139,8 @@ bool Terrain::save_to_file(const std::string& filename) const {
     }
     return true;
 }
+
+Cell Terrain::get_cell(int x, int y) const {
+        std::shared_lock<std::shared_mutex> lock(terrain_mutex);
+        return grid[x][y]; 
+    }
