@@ -92,8 +92,8 @@ We welcome:
 
 **How to contribute:**  
 1. Fork → Hack → PR  
-2. Claim an issue from our [Good First Issues](link-to-issues)  
-3. Chat with us on [Discord](invite-link)  
+<!--- 2. Claim an issue from our [Good First Issues](link-to-issues)  --->
+2. Chat with us on [Discord](https://discord.gg/GsWAKpm2)  
 
 
 ## 📜 License
