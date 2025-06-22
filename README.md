@@ -19,9 +19,11 @@ make
 ``` 
 
 ## 📊 Example Output
+```
 Iteration 142: Drone [3] reached (12,24)
 Iteration 143: Drone [1] pathfinding...
 Target found in 144 steps!
+```
 
 ## 📜 License
 
