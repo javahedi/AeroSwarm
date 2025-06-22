@@ -15,6 +15,45 @@ A high-performance C++ simulator for autonomous drone swarms with parallel pathf
 - **Real-time visualization** (GIF generation)
 - **Scalable architecture** for 1000+ drones
 
+
+## 🧠 Swarm Exploration Algorithm
+
+Target-Finding Without Prior Knowledge
+
+Your drones use a multi-phase exploration strategy combining:
+
+1. 🕵️ Decentralized Probing
+
+Each drone autonomously explores using:
+
+```c++
+while not target_found:
+    neighbors = get_adjacent_cells()
+    next_pos = select_least_visited(neighbors)
+    move_and_mark_visited(next_pos)
+```
+### 2. 📊 Adaptive Heuristics
+
+Drones prioritize:
+
+    - Least-Visited Cells:
+    ```math
+    P_{visit} = \frac{1}{visit\_count + 1}
+    ```
+    - High Information Gain:
+        - Cells with more unvisited neighbors get higher priority
+        - score = number_of_unexplored_adjacent_cells
+
+### 3. 🔀 Emergent Coordination
+    - No direct communication between drones
+    - Implicit coordination via shared terrain markings (Cell::Visited)
+    - Parallel exploration through thread-safe position updates
+
+### 4. 🎯 Target Discovery
+
+    - Drones only recognize the target when physically adjacent
+    - First drone to reach the target terminates the simulation
+
 ## 🛠️ Build
 ```bash
 mkdir build && cd build
