@@ -1,5 +1,10 @@
 # 🚀 AeroSwarm - Parallel Drone Swarm Simulator
 
+![CI](https://github.com/YOUR_USERNAME/AeroSwarm/actions/workflows/ci.yml/badge.svg)
+![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+
 ![Demo GIF](docs/drone_sim.gif)  <!-- Your generated GIF here -->
 
 > **Note**: If the GIF doesn't animate on GitHub, refresh the page or view it [directly](docs/simulation.gif).
