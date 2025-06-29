@@ -7,7 +7,7 @@
 
 ![Demo GIF](docs/drone_sim.gif)  <!-- Your generated GIF here -->
 
-> **Note**: If the GIF doesn't animate on GitHub, refresh the page or view it [directly](docs/simulation.gif).
+> **Note**: If the GIF doesn't animate on GitHub, refresh the page or view it [directly](docs/drone_sim.gif).
 
 A high-performance C++ simulator for autonomous drone swarms with parallel pathfinding.
 
