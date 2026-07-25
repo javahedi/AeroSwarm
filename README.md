@@ -9,7 +9,7 @@
 
 > **Note**: If the GIF doesn't animate on GitHub, refresh the page or view it [directly](docs/drone_sim.gif).
 
-A high-performance C++ simulator for autonomous drone swarms with parallel pathfinding.
+A  C++ simulator for autonomous drone swarms with parallel pathfinding.
 
 
 
