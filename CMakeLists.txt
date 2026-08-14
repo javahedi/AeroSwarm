@@ -77,7 +77,9 @@ if(BUILD_TESTS)
         message(STATUS "Using system-installed Catch2")
     endif()
 
-    add_executable(tests tests/test_drone.cpp)
+    add_executable(tests 
+        tests/test_terrain.cpp
+    )
     target_link_libraries(tests PRIVATE SwarmCore Catch2::Catch2WithMain)
     target_include_directories(tests PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
