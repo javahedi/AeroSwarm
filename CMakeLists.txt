@@ -24,6 +24,11 @@ add_library(SwarmCore STATIC
     src/run.cpp
     src/drone.cpp
     src/utility.cpp
+    
+)
+
+add_library(BaselineCore STATIC
+    src/simulation.cpp
 )
 
 # Main executable
@@ -55,6 +60,8 @@ else()
     target_compile_options(SwarmCore PRIVATE -Wall -Wextra -Wpedantic -g)
 endif()
 
+
+
 # Tests
 option(BUILD_TESTS "Build tests" ON)
 
@@ -77,8 +84,13 @@ if(BUILD_TESTS)
         message(STATUS "Using system-installed Catch2")
     endif()
 
-    add_executable(tests tests/test_drone.cpp)
-    target_link_libraries(tests PRIVATE SwarmCore Catch2::Catch2WithMain)
+    add_executable(tests 
+        tests/test_terrain.cpp
+        tests/test_drone_baseline.cpp
+        tests/test_simulation.cpp
+    )
+    #target_link_libraries(tests PRIVATE SwarmCore Catch2::Catch2WithMain)
+    target_link_libraries(tests PRIVATE BaselineCore Catch2::Catch2WithMain)
     target_include_directories(tests PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
     include(CTest)
