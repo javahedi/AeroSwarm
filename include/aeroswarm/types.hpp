@@ -27,3 +27,5 @@ struct Cell {
     CellType type{CellType::Free};
     bool visited{false};
 };
+
+

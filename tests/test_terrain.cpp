@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "aeroswarm/terrain.hpp"
 #include <stdexcept>
+#include <algorithm>
 
 TEST_CASE("Terrain reports valid bounds") {
     Terrain terrain{3, 4};
