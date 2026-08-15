@@ -135,3 +135,43 @@ TEST_CASE("Simulation reports stuck when no drone can move") {
     REQUIRE(status == SimulationStatus::Stuck);
     REQUIRE_FALSE(simulation.target_found());
 }
+
+
+TEST_CASE("Simulation is deterministic for the same seed") {
+    Terrain terrain1{5,5};
+    Terrain terrain2{5,5};
+
+    terrain1.set_target({4, 4});
+    terrain2.set_target({4, 4});
+
+    std::vector<Drone> drones1{
+        Drone{1, {0, 0}},
+        Drone{2, {0, 4}}
+    };
+
+    std::vector<Drone> drones2{
+        Drone{1, {0, 0}},
+        Drone{2, {0, 4}}
+    };
+
+    Simulation sim1{terrain1, drones1, 42};
+    Simulation sim2{terrain2, drones2, 42};
+
+    const auto status1 = sim1.run_until_done();
+    const auto status2 = sim2.run_until_done();
+    
+    
+    REQUIRE(status1 == status2);
+    REQUIRE(sim1.target_found() == sim2.target_found());
+    REQUIRE(sim1.winning_drone_id() == sim2.winning_drone_id());
+
+    REQUIRE(sim1.drones().size() == sim2.drones().size());
+
+     for (std::size_t i = 0; i < sim1.drones().size(); ++i) {
+        REQUIRE(
+            sim1.drones()[i].position()
+            == sim2.drones()[i].position()
+        );
+    }
+
+}
