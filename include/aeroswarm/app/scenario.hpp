@@ -12,9 +12,9 @@ struct Scenario {
     Position target{10, 20};
 
     std::vector<Position> obstacles{
-        {2, 1},
-        {2, 2},
-        {2, 3}
+        {20, 1},
+        {10, 14},
+        {5, 9}
     };
 
     std::vector<Drone> drones{

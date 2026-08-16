@@ -124,12 +124,51 @@ void ParallelSimulation::worker(std::size_t drone_index) {
             return;
         }
 
-        std::uniform_int_distribution<std::size_t> dist(
-            0,
-            neighbors.size() - 1
-        );
+        // std::uniform_int_distribution<std::size_t> dist(
+        //     0,
+        //     neighbors.size() - 1
+        // );
 
-        const Position next = neighbors[dist(rng)];
+        // const Position next = neighbors[dist(rng)];
+
+
+        // If the target is directly reachable, prioritize it immediately.
+        std::optional<Position> target_candidate;
+
+        for (const auto& candidate : neighbors) {
+            if (terrain_.is_target(candidate)) {
+                target_candidate = candidate;
+                break;
+            }
+        }
+
+        Position next;
+
+        if (target_candidate.has_value()) {
+            next = target_candidate.value();
+        } else {
+            int best_gain = -1;
+            std::vector<Position> best_candidates;
+
+            for (const auto& candidate : neighbors) {
+                const int gain = terrain_.information_gain(candidate);
+
+                if (gain > best_gain) {
+                    best_gain = gain;
+                    best_candidates.clear();
+                    best_candidates.push_back(candidate);
+                } else if (gain == best_gain) {
+                    best_candidates.push_back(candidate);
+                }
+            }
+
+            std::uniform_int_distribution<std::size_t> dist(
+                0,
+                best_candidates.size() - 1
+            );
+
+            next = best_candidates[dist(rng)];
+        }
 
         // Another drone may have claimed it since available_neighbors()
         if (!terrain_.try_claim_cell(next)) {

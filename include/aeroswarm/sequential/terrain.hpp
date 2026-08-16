@@ -117,7 +117,8 @@ private:
     std::vector<std::vector<Cell>> grid_;
     
     const std::vector<Position> directions_{
-        {1,0}, {-1,0}, {0,1}, {0,-1}
+        {1,0}, {-1,0}, {0,1}, {0,-1}, 
+        //{1,1}, {-1,-1}, {-1,1}, {1,-1},
     };
     
 
