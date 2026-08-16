@@ -46,7 +46,7 @@ public:
 private:
     Terrain terrain_;
     std::vector<Drone> drones_;
-    std::mt19937 rng_;
+    std::mt19937 seed_;
     bool target_found_{false};
     //int winning_drone_id_{-1};
     std::optional<int> winning_drone_id_;

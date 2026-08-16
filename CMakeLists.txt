@@ -31,6 +31,11 @@ add_library(BaselineCore STATIC
     src/simulation.cpp
 )
 
+add_library(ParallelCore STATIC
+    src/parallel_simulation.cpp
+)
+
+
 # Main executable
 add_executable(AeroSwarm src/main.cpp)
 target_link_libraries(AeroSwarm PRIVATE SwarmCore)
@@ -84,13 +89,18 @@ if(BUILD_TESTS)
         message(STATUS "Using system-installed Catch2")
     endif()
 
-    add_executable(tests 
+    add_executable(tests
         tests/test_terrain.cpp
         tests/test_drone_baseline.cpp
         tests/test_simulation.cpp
+        tests/test_parallel_terrain.cpp
+        tests/test_parallel_simulation.cpp
+        tests/test_comparison.cpp
     )
+    
     #target_link_libraries(tests PRIVATE SwarmCore Catch2::Catch2WithMain)
-    target_link_libraries(tests PRIVATE BaselineCore Catch2::Catch2WithMain)
+    #target_link_libraries(tests PRIVATE BaselineCore Catch2::Catch2WithMain)
+    target_link_libraries(tests PRIVATE BaselineCore ParallelCore Catch2::Catch2WithMain)
     target_include_directories(tests PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
     include(CTest)

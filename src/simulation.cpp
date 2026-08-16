@@ -8,7 +8,7 @@ Simulation::Simulation(Terrain terrain,
                unsigned int seed) : 
                 terrain_(std::move(terrain)), 
                 drones_(std::move(drones)),
-                rng_(seed) 
+                seed_(seed) 
         {
             for (const auto& drone : drones_) {
                 terrain_.mark_visited(drone.position());
@@ -54,7 +54,7 @@ bool Simulation::step() {
             neighbors.size() - 1
         );
 
-        const Position next = neighbors[dist(rng_)];
+        const Position next = neighbors[dist(seed_)];
 
         drone.move_to(next);
         terrain_.mark_visited(next);
