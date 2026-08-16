@@ -5,12 +5,15 @@
 #include "aeroswarm/app/parallel_runner.hpp"
 #include "aeroswarm/app/scenario.hpp"
 #include "aeroswarm/app/scenario_validation.hpp"
-
+#include "aeroswarm/app/parallel_live_runner.hpp"
 
 int main(int argc, char* argv[]) {
 
     if (argc < 2) {
-        std::cout << "Usage: " << argv[0] << " <sequential|parallel>\n";
+        std::cout
+            << "Usage: "
+            << argv[0]
+            << " <sequential|parallel|parallel-live>\n";
         return 1;
     }
 
@@ -30,14 +33,40 @@ int main(int argc, char* argv[]) {
 
     if (mode == "sequential") {
         return run_sequential(scenario);
-    } else if (mode == "parallel") {
-        return run_parallel(scenario);
-    } else {
-        std::cout << "Unknown mode\n";
-        return 1;
     }
+
+    if (mode == "parallel") {
+        return run_parallel(scenario);
+    }
+
+    if (mode == "parallel-live") {
+        return run_parallel_live(scenario);
+    }
+
+    std::cerr << "Unknown mode: " << mode << '\n';
+    return 1;
 
     
 
     return 0;
 }
+
+/*
+cmake -S . -B build     ← CONFIGURE / create build directory
+cmake --build build     ← BUILD using that directory
+ctest --test-dir build  ← TEST what was built
+
+1: 
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+ctest --test-dir build --output-on-failure
+
+2: 
+cmake -S . -B build-tsan \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" \
+  -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread"
+
+cmake --build build-tsan
+ctest --test-dir build-tsan --output-on-failure
+*/

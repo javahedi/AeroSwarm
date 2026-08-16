@@ -179,3 +179,83 @@ TEST_CASE("Simulation is deterministic for the same seed") {
     }
 
 }
+
+
+
+
+
+
+
+TEST_CASE("Sequential simulation exposes initial snapshot") {
+    Terrain terrain{3, 3};
+
+    Simulation simulation{
+        terrain,
+        {Drone{1, {0, 0}}},
+        42
+    };
+
+    const auto snapshot = simulation.snapshot();
+
+    REQUIRE(snapshot.drone_positions.size() == 1);
+    REQUIRE(snapshot.drone_positions[0] == Position{0, 0});
+    REQUIRE_FALSE(snapshot.target_found);
+    REQUIRE_FALSE(snapshot.winning_drone_id.has_value());
+    REQUIRE(snapshot.tick == 0);
+    REQUIRE(snapshot.visited_cells.size() == 1);
+    REQUIRE(snapshot.visited_cells[0] == Position{0, 0});
+}
+
+
+TEST_CASE("Sequential simulation snapshot tick advances") {
+    Terrain terrain{3, 3};
+
+    Simulation simulation{
+        terrain,
+        {Drone{1, {1, 1}}},
+        42
+    };
+
+    simulation.step();
+
+    const auto snapshot = simulation.snapshot();
+
+    REQUIRE(snapshot.tick == 1);
+  
+}
+
+TEST_CASE("Sequential snapshot contains obstacles") {
+    Terrain terrain{3, 3};
+
+    terrain.set_obstacle({1, 1});
+    terrain.set_obstacle({2, 1});
+
+    Simulation simulation{
+        terrain,
+        {Drone{1, {0, 0}}},
+        42
+    };
+
+    const auto snapshot = simulation.snapshot();
+
+    REQUIRE(snapshot.obstacle_positions.size() == 2);
+}
+
+
+
+TEST_CASE("Sequential snapshot contains target position") {
+    Terrain terrain{3, 3};
+
+    terrain.set_target({2, 2});
+
+    Simulation simulation{
+        terrain,
+        {Drone{1, {0, 0}}},
+        42
+    };
+
+    const auto snapshot = simulation.snapshot();
+
+    REQUIRE(snapshot.target.has_value());
+    REQUIRE(snapshot.target.value() == Position{2, 2});
+}

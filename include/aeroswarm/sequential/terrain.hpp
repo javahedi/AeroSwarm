@@ -3,6 +3,7 @@
 #include <vector>
 #include "aeroswarm/types.hpp"
 #include <stdexcept>
+#include <optional>
 
 
 class Terrain {
@@ -67,6 +68,49 @@ public:
         return candidates;
     }
 
+
+    std::vector<Position> visited_positions() const {
+        std::vector<Position> positions;
+
+        for (int x = 0; x < width_; ++x) {
+            for (int y = 0; y < height_; ++y) {
+                if (grid_[x][y].visited) {
+                    positions.push_back({x, y});
+                }
+            }
+        }
+
+        return positions;
+    }
+
+
+    std::vector<Position> obstacle_positions() const {
+        std::vector<Position> positions;
+
+        for (int x = 0; x < width_; ++x) {
+            for (int y = 0; y < height_; ++y) {
+                if (grid_[x][y].type == CellType::Obstacle) {
+                    positions.push_back({x, y});
+                }
+            }
+        }
+
+        return positions;
+    }
+
+
+    std::optional<Position> target_position() const {
+        for (int x = 0; x < width_; ++x) {
+            for (int y = 0; y < height_; ++y) {
+                if (grid_[x][y].type == CellType::Target) {
+                    return Position{x, y};
+                }
+            }
+        }
+
+        return std::nullopt;
+    }
+
 private:
     int width_;
     int height_;
@@ -82,4 +126,7 @@ private:
             throw std::out_of_range("Position is outside terrain bounds");
         }
     }
+
+
+    
 };

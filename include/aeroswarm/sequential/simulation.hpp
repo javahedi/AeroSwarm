@@ -6,6 +6,7 @@
 
 #include "aeroswarm/drone.hpp"
 #include "aeroswarm/sequential/terrain.hpp"
+#include "aeroswarm/live/simulation_snapshot.hpp"
 
 
 enum class SimulationStatus {
@@ -41,6 +42,7 @@ public:
     const std::optional<int>& winning_drone_id() const;
 
     SimulationStatus run_until_done();
+    SimulationSnapshot snapshot() const;
 
 private:
     Terrain terrain_;
@@ -49,4 +51,5 @@ private:
     bool target_found_{false};
     //int winning_drone_id_{-1};
     std::optional<int> winning_drone_id_;
+    std::size_t tick_{0};
 };

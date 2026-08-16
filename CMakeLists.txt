@@ -46,6 +46,7 @@ target_compile_options(ParallelCore PRIVATE
 add_library(AppCore STATIC
     src/sequential_runner.cpp
     src/parallel_runner.cpp
+    src/parallel_live_runner.cpp
     src/scenario_validation.cpp
 )
 
@@ -140,7 +141,7 @@ if(BUILD_TESTS)
 
 
     add_executable(tests
-        tests/test_terrain.cpp
+        tests/test_sequential_terrain.cpp
         tests/test_drone_baseline.cpp
         tests/test_sequential_simulation.cpp
         tests/test_parallel_terrain.cpp

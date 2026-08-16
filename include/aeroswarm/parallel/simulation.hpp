@@ -6,10 +6,11 @@
 #include <random>
 #include <vector>
 #include <mutex>
-
+#include <shared_mutex>
+#include <chrono>
 #include "aeroswarm/drone.hpp"
 #include "aeroswarm/parallel/terrain.hpp"
-
+#include "aeroswarm/live/simulation_snapshot.hpp"
 
 
 enum class ParallelSimulationStatus {
@@ -21,13 +22,15 @@ class ParallelSimulation {
     public:
         ParallelSimulation(ParallelTerrain& terrain,
                             std::vector<Drone> drones,
-                            unsigned int seed);
+                            unsigned int seed,
+                            std::chrono::milliseconds update_interval =
+                            std::chrono::milliseconds{0});
 
         ParallelSimulationStatus run();
 
         bool target_found() const;
         std::optional<int> winning_drone_id() const;
-
+        SimulationSnapshot snapshot() const;
 
 
     private:
@@ -37,6 +40,7 @@ class ParallelSimulation {
         */
         ParallelTerrain& terrain_; 
         std::vector<Drone> drones_;
+        mutable std::shared_mutex drones_mutex_;
         unsigned int seed_;
 
         /*
@@ -51,4 +55,7 @@ class ParallelSimulation {
 
 
         void worker(std::size_t drone_index);
+        std::atomic<std::size_t> tick_{0};
+
+        std::chrono::milliseconds update_interval_;
 };
