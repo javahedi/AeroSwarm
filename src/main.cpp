@@ -1,18 +1,11 @@
 #include <iostream>
 #include <string>
-#include <vector>
-
-#include "aeroswarm/drone.hpp"
-#include "aeroswarm/terrain.hpp"
-#include "aeroswarm/sequential_simulation.hpp"
-
-#include "aeroswarm/parallel/parallel_terrain.hpp"
-#include "aeroswarm/parallel/parallel_simulation.hpp"
-
 
 #include "aeroswarm/app/sequential_runner.hpp"
 #include "aeroswarm/app/parallel_runner.hpp"
 #include "aeroswarm/app/scenario.hpp"
+#include "aeroswarm/app/scenario_validation.hpp"
+
 
 int main(int argc, char* argv[]) {
 
@@ -25,6 +18,15 @@ int main(int argc, char* argv[]) {
 
 
     Scenario scenario;
+    std::string error_message;
+
+    if (!validate_scenario(scenario, error_message)) {
+        std::cerr << "Invalid scenario: "
+                << error_message
+                << '\n';
+
+        return 1;
+    }
 
     if (mode == "sequential") {
         return run_sequential(scenario);
