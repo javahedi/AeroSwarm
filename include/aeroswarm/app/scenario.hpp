@@ -6,15 +6,15 @@
 #include "aeroswarm/types.hpp"
 
 struct Scenario {
-    int width{5};
-    int height{5};
+    int width{30};
+    int height{30};
 
-    Position target{4, 4};
+    Position target{10, 20};
 
     std::vector<Position> obstacles{
-        {2, 1},
-        {2, 2},
-        {2, 3}
+        {20, 1},
+        {10, 14},
+        {5, 9}
     };
 
     std::vector<Drone> drones{

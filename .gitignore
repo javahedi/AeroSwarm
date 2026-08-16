@@ -1,5 +1,6 @@
 /build
 /build-tsan
+/build-ci-test
 /.vscode
 
 .DS_Store

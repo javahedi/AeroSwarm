@@ -1,22 +1,24 @@
 #include <utility>
-#include "aeroswarm/parallel/parallel_simulation.hpp"
+#include "aeroswarm/parallel/simulation.hpp"
 #include <random>
 #include <stdexcept>
 
-ParallelSimulation::ParallelSimulation(ParallelTerrain& terrain,
-               std::vector<Drone> drones,
-               unsigned int seed) : 
-                terrain_(terrain), 
+ParallelSimulation::ParallelSimulation(
+                ParallelTerrain& terrain,
+                std::vector<Drone> drones,
+                unsigned int seed,
+                std::chrono::milliseconds update_interval)
+                : terrain_(terrain),
                 drones_(std::move(drones)),
-                seed_(seed) 
-        {
-            for (auto& drone : drones_) {
-                if(!terrain_.initialize_start_position(drone.position())) {
-                    throw std::invalid_argument("Invalid drone start position");
+                seed_(seed),
+                update_interval_(update_interval)
+            {
+                for (const auto& drone : drones_) {
+                    if (!terrain_.initialize_start_position(drone.position())) {
+                        throw std::invalid_argument("Invalid drone start position");
+                    }
                 }
             }
-            
-        }
 
 
 bool ParallelSimulation::target_found() const {
@@ -29,94 +31,208 @@ std::optional<int> ParallelSimulation::winning_drone_id() const {
 }
 
 
+
+/*
+Worker 1 ──┐
+Worker 2 ──┼── modifying simulation
+Worker 3 ──┘
+              │
+              │ concurrently
+              ▼
+          snapshot()
+              │
+              ▼
+         renderer @ 60 FPS
+
+    >>>> our different pieces of shared state <<<<
+
+            Terrain/grid
+                protected by ParallelTerrain::mtx_
+
+            Drone positions (shared_mutex:: shared_mutex because we 
+                            have two kinds of access :: read/write)
+                protected by ParallelSimulation::drones_mutex_
+
+
+                                  drones_mutex_
+
+                    snapshot()       worker #2 read
+                    shared_lock      shared_lock
+                        \              /
+                        \            /
+                            both allowed
+
+                                BUT
+
+                            worker moves drone
+                            unique_lock
+                                |
+                        everyone else waits
+
+
+
+
+
+
+
+            Winner ID
+                protected by ParallelSimulation::winner_mutex_
+
+            target_found + tick
+                atomic
+
+*/
+
 void ParallelSimulation::worker(std::size_t drone_index) {
 
-    Drone& drone = drones_[drone_index];
-    // RNG placement is now correct: it is created once per worker, outside the loop, 
-    // so each drone continues its own pseudo-random sequence across moves.
-    std::mt19937 rng(seed_ + static_cast<unsigned int>(drone_index));
+    std::mt19937 rng(
+        seed_ + static_cast<unsigned int>(drone_index)
+    );
 
-    while (!target_found_.load())
+
+
+    int drone_id;
+
     {
+        std::shared_lock<std::shared_mutex> lock(drones_mutex_);
+        drone_id = drones_[drone_index].id();
+    }
+
+
+    auto next_update = std::chrono::steady_clock::now();
+    while (!target_found_.load()) {
+
+        if (update_interval_.count() > 0) {
+            next_update += update_interval_;
+            std::this_thread::sleep_until(next_update);
+        }
+
+        Position current_position;
+
+        // READ drone state safely
+        {
+            //I only want to read. Other readers may read at the same time.
+            std::shared_lock<std::shared_mutex> lock(drones_mutex_);
+            current_position = drones_[drone_index].position();
+        }
+
+        // Terrain has its own mutex internally
         const auto neighbors =
-        terrain_.available_neighbors(drone.position());
+            terrain_.available_neighbors(current_position);
 
         if (neighbors.empty()) {
             return;
         }
 
-        std::uniform_int_distribution<std::size_t> dist(
-            0,
-            neighbors.size() - 1
-        );
+        // std::uniform_int_distribution<std::size_t> dist(
+        //     0,
+        //     neighbors.size() - 1
+        // );
 
-        const Position next = neighbors[dist(rng)];
+        // const Position next = neighbors[dist(rng)];
 
-        if (!terrain_.try_claim_cell(next)){
+
+        // If the target is directly reachable, prioritize it immediately.
+        std::optional<Position> target_candidate;
+
+        for (const auto& candidate : neighbors) {
+            if (terrain_.is_target(candidate)) {
+                target_candidate = candidate;
+                break;
+            }
+        }
+
+        Position next;
+
+        if (target_candidate.has_value()) {
+            next = target_candidate.value();
+        } else {
+            int best_gain = -1;
+            std::vector<Position> best_candidates;
+
+            for (const auto& candidate : neighbors) {
+                const int gain = terrain_.information_gain(candidate);
+
+                if (gain > best_gain) {
+                    best_gain = gain;
+                    best_candidates.clear();
+                    best_candidates.push_back(candidate);
+                } else if (gain == best_gain) {
+                    best_candidates.push_back(candidate);
+                }
+            }
+
+            std::uniform_int_distribution<std::size_t> dist(
+                0,
+                best_candidates.size() - 1
+            );
+
+            next = best_candidates[dist(rng)];
+        }
+
+        // Another drone may have claimed it since available_neighbors()
+        if (!terrain_.try_claim_cell(next)) {
             continue;
         }
 
-        drone.move_to(next);
+        // WRITE drone state safely
+        {
+            // in share_mute, when we write we use unique_lock
+            // I am writing. Nobody else may read or write this protected state while I do it.
+            std::unique_lock<std::shared_mutex> lock(drones_mutex_);
+            drones_[drone_index].move_to(next);
+        }
+
+        tick_.fetch_add(1);
+
         if (terrain_.is_target(next)) {
+
             std::lock_guard<std::mutex> lock(winner_mutex_);
 
             if (!winning_drone_id_.has_value()) {
-                winning_drone_id_ = drone.id();
+                winning_drone_id_ = drone_id;
                 target_found_.store(true);
             }
 
             return;
         }
-
-
     }
-    
-    
-};
+}
 
 
-// void ParallelSimulation::worker(std::size_t drone_index) {
+SimulationSnapshot ParallelSimulation::snapshot() const {
+    SimulationSnapshot snapshot;
 
-//     Drone& drone = drones_[drone_index];
+    snapshot.target_found = target_found_.load();
+    snapshot.tick = tick_.load();
 
-//     if (target_found_.load()) {
-//         return;
-//     }
+    {
+        std::lock_guard<std::mutex> lock(winner_mutex_);
+        snapshot.winning_drone_id = winning_drone_id_;
+    }
 
-//     const auto neighbors =
-//         terrain_.available_neighbors(drone.position());
 
-//     if (neighbors.empty()) {
-//         return;
-//     }
+    // renderer’s snapshot also only reads:
+    {
+        std::shared_lock<std::shared_mutex> lock(drones_mutex_);
 
-//     // Each thread has its own RNG object, so there is no shared RNG data race
-//     /*
-//     seed_ = base simulation seed
+        snapshot.drone_positions.reserve(drones_.size());
 
-//     worker 0 → seed + 0
-//     worker 1 → seed + 1
-//     worker 2 → seed + 2
-//     */
-//     // std::mt19937 has internal state. Calling it changes that state
-//     std::mt19937 rng(
-//         seed_ + static_cast<unsigned int>(drone_index)
-//     );
+        for (const auto& drone : drones_) {
+            snapshot.drone_positions.push_back(
+                drone.position()
+            );
+        }
+    }
 
-//     std::uniform_int_distribution<std::size_t> dist(
-//             0,
-//             neighbors.size() - 1
-//         );
+    snapshot.visited_cells = terrain_.visited_positions();
 
-//     const Position next = neighbors[dist(rng)];
+    snapshot.obstacle_positions = terrain_.obstacle_positions();
 
-//     if (!terrain_.try_claim_cell(next)){
-//         return;
-//     }
+    snapshot.target = terrain_.target_position();
 
-//     drone.move_to(next);
-
-// }
+    return snapshot;
+}
 
 
 

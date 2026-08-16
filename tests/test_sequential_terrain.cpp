@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
-#include "aeroswarm/terrain.hpp"
+#include "aeroswarm/sequential/terrain.hpp"
+
 #include <stdexcept>
 #include <algorithm>
 
@@ -98,4 +99,16 @@ TEST_CASE("Terrain excludes out-of-bounds neighbors") {
     REQUIRE(neighbors.size() == 2);
     REQUIRE(std::find(neighbors.begin(), neighbors.end(), Position{1, 0}) != neighbors.end());
     REQUIRE(std::find(neighbors.begin(), neighbors.end(), Position{0, 1}) != neighbors.end());
+}
+
+
+TEST_CASE("Terrain reports visited positions") {
+    Terrain terrain{3, 3};
+
+    terrain.mark_visited({0, 1});
+    terrain.mark_visited({2, 2});
+
+    const auto visited = terrain.visited_positions();
+
+    REQUIRE(visited.size() == 2);
 }

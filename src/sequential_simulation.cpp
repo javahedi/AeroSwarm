@@ -1,7 +1,6 @@
 
 #include <utility>
-#include "aeroswarm/sequential_simulation.hpp"
-
+#include "aeroswarm/sequential/simulation.hpp"
 
 Simulation::Simulation(Terrain terrain,
                std::vector<Drone> drones,
@@ -35,10 +34,34 @@ const std::optional<int>&  Simulation::winning_drone_id() const{
 }
 
 
+
+
+SimulationSnapshot Simulation::snapshot() const {
+    SimulationSnapshot snapshot;
+
+    snapshot.target_found = target_found_;
+    snapshot.winning_drone_id = winning_drone_id_;
+    snapshot.tick = tick_;
+    snapshot.visited_cells = terrain_.visited_positions();
+    snapshot.obstacle_positions = terrain_.obstacle_positions();
+    snapshot.target = terrain_.target_position();
+
+    snapshot.drone_positions.reserve(drones_.size());
+
+    for (const auto& drone : drones_) {
+        snapshot.drone_positions.push_back(drone.position());
+    }
+
+    return snapshot;
+}
+
+
 bool Simulation::step() {
     if (target_found_) {
         return false;
     }
+
+    ++tick_;
 
     bool moved_any = false;
 

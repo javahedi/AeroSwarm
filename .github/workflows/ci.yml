@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
@@ -13,27 +14,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake g++
-    
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            g++ \
+            git \
+            libx11-dev \
+            libxext-dev \
+            libxrandr-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxfixes-dev \
+            libxss-dev \
+            libxtst-dev \
+            libxkbcommon-dev \
+            libwayland-dev \
+            wayland-protocols
 
-    - name: Configure CMake
-      run: |
-        mkdir build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release ..
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-    - name: Build
-      run: |
-        cd build
-        cmake --build .
+      - name: Build
+        run: |
+          cmake --build build --parallel
 
-    - name: Run tests
-      run: |
-        cd build
-        ctest --output-on-failure
+      - name: Run tests
+        run: |
+          ctest --test-dir build --output-on-failure

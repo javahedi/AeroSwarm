@@ -3,7 +3,9 @@
 #include <vector>
 #include <mutex>
 #include <stdexcept>
+#include <optional>
 #include "aeroswarm/types.hpp"
+
 
 class ParallelTerrain {
 public:
@@ -113,6 +115,84 @@ public:
         return true;
     }
 
+
+
+    std::vector<Position> visited_positions() const {
+        std::lock_guard<std::mutex> lock(mtx_);
+
+        std::vector<Position> positions;
+
+        for (int x = 0; x < width_; ++x) {
+            for (int y = 0; y < height_; ++y) {
+                if (grid_[x][y].visited) {
+                    positions.push_back({x, y});
+                }
+            }
+        }
+
+        return positions;
+    }
+
+    std::vector<Position> obstacle_positions() const {
+        std::lock_guard<std::mutex> lock(mtx_);
+
+        std::vector<Position> positions;
+
+        for (int x = 0; x < width_; ++x) {
+            for (int y = 0; y < height_; ++y) {
+                if (grid_[x][y].type == CellType::Obstacle) {
+                    positions.push_back({x, y});
+                }
+            }
+        }
+
+        return positions;
+    }
+
+    std::optional<Position> target_position() const {
+        std::lock_guard<std::mutex> lock(mtx_);
+
+        for (int x = 0; x < width_; ++x) {
+            for (int y = 0; y < height_; ++y) {
+                if (grid_[x][y].type == CellType::Target) {
+                    return Position{x, y};
+                }
+            }
+        }
+
+        return std::nullopt;
+    }
+
+    int information_gain(const Position& pos) const {
+        std::lock_guard<std::mutex> lock(mtx_);
+
+        if (!in_bounds(pos)) {
+            return 0;
+        }
+
+        int gain = 0;
+
+        for (const auto& dir : directions_) {
+            const Position next = pos + dir;
+
+            if (!in_bounds(next)) {
+                continue;
+            }
+
+            if (grid_[next.x][next.y].type == CellType::Obstacle) {
+                continue;
+            }
+
+            if (grid_[next.x][next.y].visited) {
+                continue;
+            }
+
+            ++gain;
+        }
+
+        return gain;
+}
+
 private:
     int width_;
     int height_;
@@ -126,7 +206,8 @@ private:
 
 
     const std::vector<Position> directions_{
-        {1,0}, {-1,0}, {0,1}, {0,-1}
+        {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
     };
     
 

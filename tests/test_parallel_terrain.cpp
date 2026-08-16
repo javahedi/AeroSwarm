@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include "aeroswarm/parallel/parallel_terrain.hpp" 
+#include "aeroswarm/parallel/simulation.hpp"
 
 #include <atomic>
 #include <vector>
@@ -17,12 +17,12 @@ TEST_CASE("ParallelTerrain excludes claimed neighbors") {
     ParallelTerrain terrain{3, 3};
 
     const auto before = terrain.available_neighbors({1, 1});
-    REQUIRE(before.size() == 4);
+    REQUIRE(before.size() == 8);
 
     REQUIRE(terrain.try_claim_cell({0, 1}));
 
     const auto after = terrain.available_neighbors({1, 1});
-    REQUIRE(after.size() == 3);
+    REQUIRE(after.size() == 7);
 }
 
 
@@ -41,7 +41,7 @@ TEST_CASE("ParallelTerrain excludes obstacles from available neighbors") {
 
     const auto neighbors = terrain.available_neighbors({1, 1});
 
-    REQUIRE(neighbors.size() == 3);
+    REQUIRE(neighbors.size() == 7);
 }
 
 
@@ -331,4 +331,31 @@ TEST_CASE("ParallelTerrain rejects invalid drone start positions") {
 
     REQUIRE_FALSE(terrain.initialize_start_position({1, 1}));
     REQUIRE_FALSE(terrain.initialize_start_position({5, 5}));
+}
+
+
+
+TEST_CASE("ParallelTerrain reports information gain") {
+    ParallelTerrain terrain{3, 3};
+
+    REQUIRE(terrain.information_gain({1, 1}) == 8);
+}
+
+TEST_CASE("ParallelTerrain information gain excludes obstacles") {
+    ParallelTerrain terrain{3, 3};
+
+    terrain.set_obstacle({0, 1});
+    terrain.set_obstacle({2, 1});
+
+    REQUIRE(terrain.information_gain({1, 1}) == 6);
+}
+
+
+TEST_CASE("ParallelTerrain corner has three available neighbors") {
+    ParallelTerrain terrain{3, 3};
+
+    const auto neighbors =
+        terrain.available_neighbors({0, 0});
+
+    REQUIRE(neighbors.size() == 3);
 }

@@ -10,6 +10,31 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 
 # ============================================================
+# SDL3
+# ============================================================
+find_package(SDL3 QUIET CONFIG)
+
+if(NOT SDL3_FOUND)
+    message(STATUS "SDL3 not found, downloading with FetchContent...")
+
+    include(FetchContent)
+
+    FetchContent_Declare(
+        SDL3
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG release-3.4.12
+    )
+
+    set(SDL_TESTS OFF CACHE BOOL "" FORCE)
+    set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+    FetchContent_MakeAvailable(SDL3)
+else()
+    message(STATUS "Using system-installed SDL3")
+endif()
+
+
+# ============================================================
 # Sequential simulation core
 # ============================================================
 
@@ -46,12 +71,18 @@ target_compile_options(ParallelCore PRIVATE
 add_library(AppCore STATIC
     src/sequential_runner.cpp
     src/parallel_runner.cpp
+    src/parallel_live_runner.cpp
+    src/parallel_sdl_runner.cpp
     src/scenario_validation.cpp
+    src/scenario_factory.cpp
+    src/sdl_renderer.cpp
 )
+
 
 target_link_libraries(AppCore PUBLIC
     SequentialCore
     ParallelCore
+    SDL3::SDL3
 )
 
 target_compile_options(AppCore PRIVATE
@@ -100,6 +131,7 @@ configure_file(
 )
 
 
+
 # ============================================================
 # Tests
 # ============================================================
@@ -140,13 +172,14 @@ if(BUILD_TESTS)
 
 
     add_executable(tests
-        tests/test_terrain.cpp
         tests/test_drone_baseline.cpp
+        tests/test_sequential_terrain.cpp
         tests/test_sequential_simulation.cpp
         tests/test_parallel_terrain.cpp
         tests/test_parallel_simulation.cpp
         tests/test_comparison.cpp
         tests/test_scenario_validation.cpp
+        tests/test_scenario_factory.cpp
     )
 
 
