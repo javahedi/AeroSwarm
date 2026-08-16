@@ -111,11 +111,11 @@ The visualization layer is intentionally independent from the simulation engine.
 │          Parallel Simulation              │
 │                                           │
 │ Drone 1   Drone 2   Drone 3   Drone 4     │
-│    │         │         │         │         │
-│    └─────────┴────┬────┴─────────┘         │
-│                   │                        │
+│    │         │         │         │        │
+│    └─────────┴────┬────┴─────────┘        │
+│                   │                       │
 │            Shared Terrain                 │
-│                   │                        │
+│                   │                       │
 │         synchronized access               │
 └───────────────────────────────────────────┘
 ```
