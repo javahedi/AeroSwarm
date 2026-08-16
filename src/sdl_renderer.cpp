@@ -137,6 +137,7 @@ void SdlRenderer::draw_grid() {
     }
 }
 
+
 void SdlRenderer::render(const SimulationSnapshot& snapshot) {
     SDL_SetRenderDrawColor(renderer_, 25, 25, 25, 255);
     SDL_RenderClear(renderer_);
