@@ -1,7 +1,7 @@
 #include <utility>
 #include "aeroswarm/parallel/parallel_simulation.hpp"
 #include <random>
-
+#include <stdexcept>
 
 ParallelSimulation::ParallelSimulation(ParallelTerrain& terrain,
                std::vector<Drone> drones,
@@ -10,8 +10,12 @@ ParallelSimulation::ParallelSimulation(ParallelTerrain& terrain,
                 drones_(std::move(drones)),
                 seed_(seed) 
         {
+            for (auto& drone : drones_) {
+                if(!terrain_.initialize_start_position(drone.position())) {
+                    throw std::invalid_argument("Invalid drone start position");
+                }
+            }
             
-
         }
 
 
@@ -116,7 +120,7 @@ void ParallelSimulation::worker(std::size_t drone_index) {
 
 
 
-void ParallelSimulation::run() {
+ParallelSimulationStatus ParallelSimulation::run() {
     std::vector<std::thread> threads;
     /*
     
@@ -136,4 +140,10 @@ void ParallelSimulation::run() {
     for (auto& thread : threads) {
         thread.join();
     }
+
+    if (target_found_.load()) {
+        return ParallelSimulationStatus::TargetFound;
+    }
+
+    return ParallelSimulationStatus::Stuck;
 }

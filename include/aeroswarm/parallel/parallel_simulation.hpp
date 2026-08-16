@@ -11,13 +11,19 @@
 #include "aeroswarm/parallel/parallel_terrain.hpp"
 
 
+
+enum class ParallelSimulationStatus {
+    TargetFound,
+    Stuck
+};
+
 class ParallelSimulation {
     public:
         ParallelSimulation(ParallelTerrain& terrain,
                             std::vector<Drone> drones,
                             unsigned int seed);
 
-        void run();
+        ParallelSimulationStatus run();
 
         bool target_found() const;
         std::optional<int> winning_drone_id() const;

@@ -95,6 +95,7 @@ if(BUILD_TESTS)
         tests/test_simulation.cpp
         tests/test_parallel_terrain.cpp
         tests/test_parallel_simulation.cpp
+        tests/test_comparison.cpp
     )
     
     #target_link_libraries(tests PRIVATE SwarmCore Catch2::Catch2WithMain)

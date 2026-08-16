@@ -302,3 +302,33 @@ TEST_CASE("ParallelTerrain allows different cells to be claimed concurrently") {
 
     REQUIRE(successful_claims == static_cast<int>(positions.size()));
 }
+
+
+
+
+TEST_CASE("ParallelTerrain initializes a valid drone start position") {
+    ParallelTerrain terrain{3, 3};
+
+    REQUIRE(terrain.initialize_start_position({1, 1}));
+
+    // Same cell is already considered visited,
+    // so it should no longer be claimable as a movement target.
+    REQUIRE_FALSE(terrain.try_claim_cell({1, 1}));
+}
+
+
+TEST_CASE("ParallelTerrain allows multiple drones to share the same start position") {
+    ParallelTerrain terrain{3, 3};
+
+    REQUIRE(terrain.initialize_start_position({1, 1}));
+    REQUIRE(terrain.initialize_start_position({1, 1}));
+}
+
+TEST_CASE("ParallelTerrain rejects invalid drone start positions") {
+    ParallelTerrain terrain{3, 3};
+
+    terrain.set_obstacle({1, 1});
+
+    REQUIRE_FALSE(terrain.initialize_start_position({1, 1}));
+    REQUIRE_FALSE(terrain.initialize_start_position({5, 5}));
+}

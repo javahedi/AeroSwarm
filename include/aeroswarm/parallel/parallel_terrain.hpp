@@ -94,6 +94,25 @@ public:
     }
 
 
+    bool initialize_start_position(const Position& pos) {
+        std::lock_guard<std::mutex> lock(mtx_);
+
+        if (!in_bounds(pos)) {
+            return false;
+        }
+
+        if (grid_[pos.x][pos.y].type == CellType::Obstacle) {
+            return false;
+        }
+
+        if (grid_[pos.x][pos.y].visited) {
+            return true;
+        }
+
+        grid_[pos.x][pos.y].visited = true;
+        return true;
+    }
+
 private:
     int width_;
     int height_;
@@ -115,5 +134,7 @@ private:
         if (!in_bounds(pos)) {
             throw std::out_of_range("Position is outside terrain bounds");
         }
+
+
     }
 };
