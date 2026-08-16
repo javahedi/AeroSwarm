@@ -1,10 +1,9 @@
 #pragma once
 
-#include "aeroswarm/types.hpp"
 #include <vector>
 #include <mutex>
 #include <stdexcept>
-
+#include "aeroswarm/types.hpp"
 
 class ParallelTerrain {
 public:
