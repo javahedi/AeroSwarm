@@ -31,6 +31,7 @@ jobs:
             libxi-dev \
             libxfixes-dev \
             libxss-dev \
+            libxtst-dev \
             libxkbcommon-dev \
             libwayland-dev \
             wayland-protocols
