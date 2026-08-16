@@ -15,8 +15,11 @@ add_library(ParallelCore STATIC
     src/parallel_simulation.cpp
 )
 
+
 add_executable(AeroSwarm
     src/main.cpp
+    src/sequential_runner.cpp
+    src/parallel_runner.cpp
 )
 
 target_link_libraries(AeroSwarm PRIVATE

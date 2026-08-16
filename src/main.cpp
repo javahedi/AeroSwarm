@@ -9,7 +9,13 @@
 #include "aeroswarm/parallel/parallel_terrain.hpp"
 #include "aeroswarm/parallel/parallel_simulation.hpp"
 
+
+#include "aeroswarm/app/sequential_runner.hpp"
+#include "aeroswarm/app/parallel_runner.hpp"
+#include "aeroswarm/app/scenario.hpp"
+
 int main(int argc, char* argv[]) {
+
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <sequential|parallel>\n";
         return 1;
@@ -17,10 +23,13 @@ int main(int argc, char* argv[]) {
 
     const std::string mode = argv[1];
 
+
+    Scenario scenario;
+
     if (mode == "sequential") {
-        std::cout << "Running sequential simulation\n";
+        return run_sequential(scenario);
     } else if (mode == "parallel") {
-        std::cout << "Running parallel simulation\n";
+        return run_parallel(scenario);
     } else {
         std::cout << "Unknown mode\n";
         return 1;
