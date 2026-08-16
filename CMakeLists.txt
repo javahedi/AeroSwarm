@@ -33,6 +33,26 @@ else()
     message(STATUS "Using system-installed SDL3")
 endif()
 
+find_package(SDL3_ttf QUIET CONFIG)
+
+if(NOT SDL3_ttf_FOUND)
+    message(STATUS "SDL3_ttf not found, downloading with FetchContent...")
+
+    include(FetchContent)
+
+    FetchContent_Declare(
+        SDL3_ttf
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
+        GIT_TAG release-3.2.2
+    )
+
+    set(SDLTTF_SAMPLES OFF CACHE BOOL "" FORCE)
+    set(SDLTTF_VENDORED ON CACHE BOOL "" FORCE)
+
+    FetchContent_MakeAvailable(SDL3_ttf)
+else()
+    message(STATUS "Using system-installed SDL3_ttf")
+endif()
 
 # ============================================================
 # Sequential simulation core
@@ -83,6 +103,7 @@ target_link_libraries(AppCore PUBLIC
     SequentialCore
     ParallelCore
     SDL3::SDL3
+    SDL3_ttf::SDL3_ttf
 )
 
 target_compile_options(AppCore PRIVATE

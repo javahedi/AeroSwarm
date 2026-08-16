@@ -6,6 +6,22 @@ AeroSwarm is a modern C++ simulation project for exploring **concurrent agents, 
 
 Multiple autonomous drones explore a shared 2D environment containing obstacles and a target. The project provides both a **sequential reference implementation** and a **parallel multi-threaded implementation**, together with a live console monitor and an SDL3 graphical renderer.
 
+## 🎬 Live Demo
+
+<p align="center">
+  <img
+    src="docs/media/aeroswarm-live.gif"
+    alt="AeroSwarm real-time SDL3 simulation with live telemetry"
+    width="100%"
+  />
+</p>
+
+<p align="center">
+  <sub>
+    Parallel drone simulation with thread-safe snapshots and live SDL3 telemetry.
+  </sub>
+</p>
+
 The current architecture deliberately separates:
 
 - simulation logic,
