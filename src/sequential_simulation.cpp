@@ -1,6 +1,6 @@
 
 #include <utility>
-#include "aeroswarm/simulation.hpp"
+#include "aeroswarm/sequential_simulation.hpp"
 
 
 Simulation::Simulation(Terrain terrain,
