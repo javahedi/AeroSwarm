@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "aeroswarm/sequential/simulation.hpp"
+#include "aeroswarm/parallel/simulation.hpp"
 
-#include "aeroswarm/sequential_simulation.hpp"
-#include "aeroswarm/parallel/parallel_simulation.hpp"
 
 TEST_CASE("Sequential and parallel simulations both find a reachable target") {
     Terrain sequential_terrain{3, 3};

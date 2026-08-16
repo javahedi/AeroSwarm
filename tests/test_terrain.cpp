@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
-#include "aeroswarm/terrain.hpp"
+#include "aeroswarm/sequential/terrain.hpp"
+
 #include <stdexcept>
 #include <algorithm>
 

@@ -8,7 +8,7 @@
 #include <mutex>
 
 #include "aeroswarm/drone.hpp"
-#include "aeroswarm/parallel/parallel_terrain.hpp"
+#include "aeroswarm/parallel/terrain.hpp"
 
 
 

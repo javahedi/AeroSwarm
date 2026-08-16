@@ -1,7 +1,6 @@
 
 #include <utility>
-#include "aeroswarm/sequential_simulation.hpp"
-
+#include "aeroswarm/sequential/simulation.hpp"
 
 Simulation::Simulation(Terrain terrain,
                std::vector<Drone> drones,

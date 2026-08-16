@@ -1,5 +1,5 @@
 #include <utility>
-#include "aeroswarm/parallel/parallel_simulation.hpp"
+#include "aeroswarm/parallel/simulation.hpp"
 #include <random>
 #include <stdexcept>
 

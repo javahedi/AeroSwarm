@@ -5,8 +5,7 @@
 #include <optional>
 
 #include "aeroswarm/drone.hpp"
-#include "aeroswarm/terrain.hpp"
-
+#include "aeroswarm/sequential/terrain.hpp"
 
 
 enum class SimulationStatus {

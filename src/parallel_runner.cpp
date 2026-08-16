@@ -3,8 +3,8 @@
 
 #include "aeroswarm/app/parallel_runner.hpp"
 #include "aeroswarm/drone.hpp"
-#include "aeroswarm/parallel/parallel_simulation.hpp"
-#include "aeroswarm/parallel/parallel_terrain.hpp"
+#include "aeroswarm/parallel/terrain.hpp"
+#include "aeroswarm/parallel/simulation.hpp" 
 
 int run_parallel(const Scenario& scenario) {
     ParallelTerrain terrain{

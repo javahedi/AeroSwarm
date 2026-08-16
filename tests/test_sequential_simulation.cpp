@@ -1,7 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
 
-#include "aeroswarm/sequential_simulation.hpp"
+
+#include "aeroswarm/sequential/simulation.hpp"
+
+
 
 TEST_CASE("Simulation stores initial terrain and drones") {
     Terrain terrain{3, 3};

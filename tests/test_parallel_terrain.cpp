@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include "aeroswarm/parallel/parallel_terrain.hpp" 
+#include "aeroswarm/parallel/simulation.hpp"
 
 #include <atomic>
 #include <vector>

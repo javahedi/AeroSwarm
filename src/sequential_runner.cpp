@@ -3,8 +3,8 @@
 
 #include "aeroswarm/app/sequential_runner.hpp"
 #include "aeroswarm/drone.hpp"
-#include "aeroswarm/terrain.hpp"
-#include "aeroswarm/sequential_simulation.hpp"
+#include "aeroswarm/sequential/terrain.hpp"
+#include "aeroswarm/sequential/simulation.hpp"
 
 
 int run_sequential(const Scenario& scenario) {

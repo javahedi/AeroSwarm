@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-
-#include "aeroswarm/parallel/parallel_simulation.hpp"
+#include "aeroswarm/parallel/simulation.hpp"
 
 TEST_CASE("ParallelSimulation initializes without a winner") {
     ParallelTerrain terrain{3, 3};
