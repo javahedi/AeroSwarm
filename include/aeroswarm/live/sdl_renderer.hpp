@@ -4,6 +4,10 @@
 
 #include "aeroswarm/live/simulation_snapshot.hpp"
 
+#include <string>
+
+struct TTF_Font;
+
 class SdlRenderer {
 public:
     SdlRenderer(
@@ -26,6 +30,8 @@ public:
     void render(const SimulationSnapshot& snapshot);
 
 private:
+    static constexpr int telemetry_width_ = 280;
+
     int grid_width_;
     int grid_height_;
     int cell_size_;
@@ -39,5 +45,20 @@ private:
     void draw_target(const Position& pos);
     void draw_drone(const Position& pos);
     void draw_visited(const Position& pos);
+
+    void draw_telemetry_panel();
+
+
+    TTF_Font* font_{nullptr};
+
+    void draw_text(
+        const std::string& text,
+        float x,
+        float y
+    );
+
+    void draw_telemetry(
+        const SimulationSnapshot& snapshot
+    );
 
 };
