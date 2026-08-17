@@ -68,6 +68,55 @@ public:
         return candidates;
     }
 
+    /*
+    checking heap allocation of std::vector
+    
+    std::vector<Position> available_neighbors(const Position& pos) const {
+        std::lock_guard<std::mutex> lock(mtx_);
+
+        validate_position(pos);
+
+        std::vector<Position> candidates;
+
+        std::size_t allocation_events = 0;
+        std::size_t previous_capacity = candidates.capacity();
+
+        for (const auto& dir : directions_) {
+            const Position next = pos + dir;
+
+            if (!in_bounds(next)) {
+                continue;
+            }
+
+            if (grid_[next.x][next.y].type == CellType::Obstacle) {
+                continue;
+            }
+
+            if (grid_[next.x][next.y].visited) {
+                continue;
+            }
+
+            candidates.push_back(next);
+
+            if (candidates.capacity() != previous_capacity) {
+                ++allocation_events;
+                previous_capacity = candidates.capacity();
+            }
+        }
+
+        if (allocation_events > 0) {
+            std::cout
+                << "[neighbors] size=" << candidates.size()
+                << " capacity=" << candidates.capacity()
+                << " growth_events=" << allocation_events
+                << '\n';
+        }
+
+        return candidates;
+    }
+    
+    */
+
 
     std::vector<Position> visited_positions() const {
         std::vector<Position> positions;

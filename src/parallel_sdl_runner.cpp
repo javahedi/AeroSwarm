@@ -211,5 +211,20 @@ int run_parallel_sdl(const Scenario& scenario) {
         << final_snapshot.tick
         << '\n';
 
+
+   // Allocation instrumentation summary
+    //  include/aeroswarm/parallel/terrain.hpp
+    // if you want use 
+    // std::vector<Position> available_neighbors_vector(const Position& pos) const
+    // instead of heap free
+    //  Neighbors available_neighbors(const Position& pos) const
+    // std::cout
+    //     << "Neighbor calls: "
+    //     << terrain.neighbor_calls()
+    //     << '\n'
+    //     << "Neighbor vector growths: "
+    //     << terrain.neighbor_capacity_growths()
+    //     << '\n';
+
     return 0;
 }
